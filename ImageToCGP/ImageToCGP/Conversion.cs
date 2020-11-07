@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 
@@ -24,9 +25,14 @@ namespace ImageToCGP
 
         public static int BeginConversion(string file, int minHeight = 0, int maxHeight = 20)
         {
+            //Readjust min and max heights if the user exceeded cyber grind limitations.
+            if (maxHeight > 50)
+                maxHeight = 50;
+            if (minHeight < -50)
+                minHeight = -50;
 
-            Bitmap bitmap = new Bitmap(file);
-            Console.WriteLine("Beginning conversion to " + file);
+            Bitmap bitmap = new Bitmap(file);                       //Create a bitmap.
+            Console.WriteLine("Beginning conversion to " + file);   //Annouce conversion.
 #if (DEBUG)
             Console.WriteLine("File name: " + GetFileName(file));
             Console.WriteLine("Image width: " + bitmap.Width);
@@ -34,6 +40,7 @@ namespace ImageToCGP
             Console.WriteLine("Minimum height: " + minHeight);
             Console.WriteLine("Maximum height: " + maxHeight);
 #endif
+            //Resize bitmap.
             using (Bitmap tempBitmap = new Bitmap(bitmap, new Size(16, 16)))
             {
                 bitmap = new Bitmap(tempBitmap);
@@ -42,21 +49,45 @@ namespace ImageToCGP
             Console.WriteLine("New image width: " + bitmap.Width);
             Console.WriteLine("New image height: " + bitmap.Height);
 #endif
+            //Stuff for the for loop.
+            byte pixel;                                 //Current pixel being read.
+            byte firstPixel = bitmap.GetPixel(0, 15).R; //Top left pixel in the image.
 
-            Color pixel;
-            Color firstPixel = bitmap.GetPixel(0, 0);
-            int rowCounter = 0;
+            Stack levels = new Stack();
 
             /*
              * This for loop starts from the top left corner.
-             * For every row the for loop goes through, a new line in the CGP file is being
-             * written on.
-             */ 
-            for (int y = bitmap.Height; y > 0; y--)
-                for (int x = bitmap.Width; x > 0; x--)
-                { 
-                    Console.WriteLine("X: " + x + " Y: " + y);
+             * This loop finds the difference between the first pixel in the image
+             * (top left), and finds the "level", then pushes that "level" to the stack.
+             * 
+             * Keep in mind that I'm reading off of only one color value, which is red. 
+             * This is essensially the same as reading of a greyscale image.
+             */
+            for (int y = bitmap.Height - 1; y >= 0; y--)    //HOLY SHIT THE ACTUAL FOR LOOPS LETS FUCKING GOOOOOO
+                for (int x = 0; x <= bitmap.Width - 1; x++)
+                {
+                    pixel = bitmap.GetPixel(x, y).R;                    //Get the current value of the pixel.
+                    byte iLevel = (byte)Math.Abs(pixel - firstPixel);
+                    levels.Push(iLevel);
                 }
+            /*
+             * Now that we found the levels, we'll convert them to .cgp acceptable values, while including
+             * the max and min height the user specified, if they did.
+             */
+            Stack CGPLevels = new Stack(levels.Count);
+            foreach (Object obj in levels)
+            {
+                //TODO: THIS DOESN'T WORK. FIND A BETTER WAY OF DOING THIS.
+                int cgpLevel = (byte)obj * 2 - maxHeight;
+                Console.WriteLine(cgpLevel);
+                CGPLevels.Push(cgpLevel);
+            }
+
+            //TODO: Make the program write to a file.
+
+            bitmap.Dispose();
+
+            Console.WriteLine("Completed conversion!");
             return 0;
         }
     }

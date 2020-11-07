@@ -36,23 +36,14 @@ namespace ImageToCGP
 
             switch (args.Length)
             {
-                case 1:                                 //If minimum height isn't specified...
-                    //Begin conversion with pre specified min maxes.
+                case 1:                                 //If min and max aren't specified...
+                    //Begin conversion with prespecified min maxes.
                     Conversion.BeginConversion(args[0]);
                     break;
-                case 2:                                 //If minimum height is specified but maximum height isn't...
-                    //Attempt to parse args[1]
-                    if (!int.TryParse(args[1], out minHeight))                              //If args[1] isn't a number...
-                    {
-                        Console.WriteLine("Please specify an number after [File Name]");    //Specify that they have to use a number.
-                        ConsoleOutputPresets.Info();                                        //Print program information.
-                        return -1;                                                          //End program prematurely.
-                    }
-
-                    //Begin conversion with minimum height.
+                case 2:
                     Conversion.BeginConversion(args[0], minHeight);
                     break;
-                case 3:                                 //If minimum and maximum height is specified...
+                case 3:                                 //If minimum and maximum height are specified...
                     if (!int.TryParse(args[1], out minHeight))                              //If args[1] isn't a number...
                     {
                         Console.WriteLine("Please specify an number after [File Name]");    //Specify that they have to use a number.

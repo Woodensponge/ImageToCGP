@@ -15,6 +15,9 @@ namespace ImageToCGP
                 ("ImageToCGP" +
                 "\n======================================================================" +
                 "\nConverts Image files to .cgp files. Used for The Cyber Grind in ULTRAKILL." +
+                "\nKeep in mind that the default minimum and maximum pattern heights FOR THE PROGRAM" +
+                " are 0 to 20. If your maximum pattern heights exceed or fall below cyber grind limits, " +
+                " they will be AUTOMATICALLY ADJUSTED!" +
                 "\n\nUsage:" +
                 "\n ImageToCGP.exe [File Name]" +
                 "\n ImageToCGP.exe [File Name] [Minimum Pattern Height] [Maximum Pattern Height]" +
