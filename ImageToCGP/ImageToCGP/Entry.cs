@@ -15,7 +15,7 @@ namespace ImageToCGP
             {
                 string[] splitArgs = args[0].Split('.');
                 Console.WriteLine("File is a " + splitArgs[splitArgs.Length - 1]);
-                Conversion.BeginConversion(splitArgs[splitArgs.Length - 1]);
+                Conversion.BeginConversion(args[0]);
             }
 
             Console.WriteLine("Press any key to close the process. :)");

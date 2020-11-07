@@ -37,7 +37,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleOutputPresets.cs" />
+    <Compile Include="Conversion.cs" />
     <Compile Include="Entry.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Drawing" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

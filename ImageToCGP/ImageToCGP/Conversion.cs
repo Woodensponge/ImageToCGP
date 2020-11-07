@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Drawing;
 
 namespace ImageToCGP
 {
@@ -10,6 +7,8 @@ namespace ImageToCGP
     {
         public static int BeginConversion(string file)
         {
+            Bitmap image = (Bitmap)Image.FromFile(file);
+            image.SetResolution(16f, 16f);
             return 0;
         }
     }
