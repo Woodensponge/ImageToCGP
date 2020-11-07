@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Drawing;
-using System.Drawing.Drawing2D;
 
 namespace ImageToCGP
 {
     class Conversion
     {
+        static int SwitchRatio(byte value, byte oldMin, byte oldMax, int newMin, int newMax)
+        {
+            int oldRange = (oldMin - oldMax);
+            int newRange = (newMin - newMax);
+            return (((value - oldMin) * newRange) / oldRange) + newMin;
+        }
         static string GetFileName(string path)
         {
             string[] array = null;
@@ -50,8 +55,9 @@ namespace ImageToCGP
             Console.WriteLine("New image height: " + bitmap.Height);
 #endif
             //Stuff for the for loop.
-            byte pixel;                                 //Current pixel being read.
+            byte pixel = 0;                             //Current pixel being read.
             byte firstPixel = bitmap.GetPixel(0, 15).R; //Top left pixel in the image.
+            byte maxLevel = 0;
 
             Stack levels = new Stack();
 
@@ -68,6 +74,7 @@ namespace ImageToCGP
                 {
                     pixel = bitmap.GetPixel(x, y).R;                    //Get the current value of the pixel.
                     byte iLevel = (byte)Math.Abs(pixel - firstPixel);
+                    maxLevel = (byte)Math.Max(maxLevel, iLevel);
                     levels.Push(iLevel);
                 }
             /*
@@ -77,8 +84,7 @@ namespace ImageToCGP
             Stack CGPLevels = new Stack(levels.Count);
             foreach (Object obj in levels)
             {
-                //TODO: THIS DOESN'T WORK. FIND A BETTER WAY OF DOING THIS.
-                int cgpLevel = (byte)obj * 2 - maxHeight;
+                int cgpLevel = SwitchRatio((byte)obj, 0, maxLevel, minHeight, maxHeight);
                 Console.WriteLine(cgpLevel);
                 CGPLevels.Push(cgpLevel);
             }
