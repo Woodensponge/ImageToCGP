@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace ImageToCGP
@@ -69,7 +70,7 @@ namespace ImageToCGP
              * Keep in mind that I'm reading off of only one color value, which is red. 
              * This is essensially the same as reading of a greyscale image.
              */
-            for (int y = bitmap.Height - 1; y >= 0; y--)    //HOLY SHIT THE ACTUAL FOR LOOPS LETS FUCKING GOOOOOO
+            for (int y = bitmap.Height - 1; y >= 0; y--)
                 for (int x = 0; x <= bitmap.Width - 1; x++)
                 {
                     pixel = bitmap.GetPixel(x, y).R;                    //Get the current value of the pixel.
@@ -85,11 +86,38 @@ namespace ImageToCGP
             foreach (Object obj in levels)
             {
                 int cgpLevel = SwitchRatio((byte)obj, 0, maxLevel, minHeight, maxHeight);
-                Console.WriteLine(cgpLevel);
                 CGPLevels.Push(cgpLevel);
             }
 
-            //TODO: Make the program write to a file.
+            List<string> lines = new List<string>();
+            string line = null;
+
+            int iterator = 1;
+
+            foreach (Object obj in CGPLevels)
+            {
+                if (iterator > 15)
+                {
+                    iterator = 1;
+#if(DEBUG)
+                    Console.WriteLine(line);
+#endif
+                    lines.Add(line);
+                    line = null;
+                }
+                string level = ((int)obj).ToString();
+                if (level.Contains("0"))
+                {
+                    line += String.Format("({0})", level);
+                }
+                else if (!level.Contains("0"))
+                {
+                    line += level;
+                }
+                iterator++;
+            }
+
+            //TODO: Write to a .cgp file.
 
             bitmap.Dispose();
 
