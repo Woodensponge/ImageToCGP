@@ -27,11 +27,10 @@ namespace ImageToCGP
                 return -1;                                              //End program prematurely.
             }
 
-            //Uncomment to debug supported file.
-            /*
+#if(DEBUG)
             string[] splitArgs = args[0].Split('.');
             Console.WriteLine("File is a " + splitArgs[splitArgs.Length - 1]);
-            */
+#endif
             int minHeight = 0;
             int maxHeight = 20;
 
