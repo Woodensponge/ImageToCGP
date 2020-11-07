@@ -27,7 +27,7 @@ namespace ImageToCGP
                 return -1;                                              //End program prematurely.
             }
 
-#if(DEBUG)
+#if (DEBUG)
             string[] splitArgs = args[0].Split('.');
             Console.WriteLine("File is a " + splitArgs[splitArgs.Length - 1]);
 #endif
