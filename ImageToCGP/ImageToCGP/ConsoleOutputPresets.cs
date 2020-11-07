@@ -14,11 +14,15 @@ namespace ImageToCGP
             Console.WriteLine
                 ("ImageToCGP" +
                 "\n======================================================================" +
-                "\nConverts Image files to .cgp files. Used for Cyber Grind in ULTRAKILL." +
-                "\nSupported files:" +
-                "\n .dreamed" +
+                "\nConverts Image files to .cgp files. Used for The Cyber Grind in ULTRAKILL." +
+                "\n\nUsage:" +
+                "\n ImageToCGP.exe [File Name]" +
+                "\n ImageToCGP.exe [File Name] [Minimum Pattern Height] [Maximum Pattern Height]" +
+                "\n\nVerified supported files:" +
+                "\n .png" +
+                "\n .jpg" +
+                "\n .bmp" +
                 "\n======================================================================");
-
         }
     }
 }
