@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 
 namespace ImageToCGP
 {
@@ -13,7 +14,7 @@ namespace ImageToCGP
             int newRange = (newMin - newMax);
             return (((value - oldMin) * newRange) / oldRange) + newMin;
         }
-        static string GetFileName(string path)
+        static string GetFileName(string path, bool noExtension = false)
         {
             string[] array = null;
 
@@ -26,10 +27,13 @@ namespace ImageToCGP
             else if (path.Contains("/"))
                 array = path.Split('/');
 
+            if(noExtension)
+                return array[array.Length - 1].Split('.')[0];
+
             return array[array.Length - 1];
         }
 
-        public static int BeginConversion(string file, int minHeight = 0, int maxHeight = 20)
+        public static int BeginConversion(string file, bool doInversion = false, int minHeight = 0, int maxHeight = 20)
         {
             //Readjust min and max heights if the user exceeded cyber grind limitations.
             if (maxHeight > 50)
@@ -39,22 +43,13 @@ namespace ImageToCGP
 
             Bitmap bitmap = new Bitmap(file);                       //Create a bitmap.
             Console.WriteLine("Beginning conversion to " + file);   //Annouce conversion.
-#if (DEBUG)
-            Console.WriteLine("File name: " + GetFileName(file));
-            Console.WriteLine("Image width: " + bitmap.Width);
-            Console.WriteLine("Image height: " + bitmap.Height);
-            Console.WriteLine("Minimum height: " + minHeight);
-            Console.WriteLine("Maximum height: " + maxHeight);
-#endif
+
             //Resize bitmap.
             using (Bitmap tempBitmap = new Bitmap(bitmap, new Size(16, 16)))
             {
                 bitmap = new Bitmap(tempBitmap);
             }
-#if (DEBUG)
-            Console.WriteLine("New image width: " + bitmap.Width);
-            Console.WriteLine("New image height: " + bitmap.Height);
-#endif
+
             //Stuff for the for loop.
             byte pixel = 0;                             //Current pixel being read.
             byte firstPixel = bitmap.GetPixel(0, 15).R; //Top left pixel in the image.
@@ -71,13 +66,24 @@ namespace ImageToCGP
              * This is essensially the same as reading of a greyscale image.
              */
             for (int y = bitmap.Height - 1; y >= 0; y--)
+            {
                 for (int x = 0; x <= bitmap.Width - 1; x++)
                 {
                     pixel = bitmap.GetPixel(x, y).R;                    //Get the current value of the pixel.
+
+                    if (doInversion)
+                    {
+                        pixel = (byte)(255 - pixel);
+                    }
+
                     byte iLevel = (byte)Math.Abs(pixel - firstPixel);
                     maxLevel = (byte)Math.Max(maxLevel, iLevel);
                     levels.Push(iLevel);
                 }
+            }
+
+            bitmap.Dispose();                                           //We don't need the bitmap object anymore.
+
             /*
              * Now that we found the levels, we'll convert them to .cgp acceptable values, while including
              * the max and min height the user specified, if they did.
@@ -96,32 +102,53 @@ namespace ImageToCGP
 
             foreach (Object obj in CGPLevels)
             {
-                if (iterator > 15)
-                {
-                    iterator = 1;
-#if(DEBUG)
-                    Console.WriteLine(line);
-#endif
-                    lines.Add(line);
-                    line = null;
-                }
                 string level = ((int)obj).ToString();
-                if (level.Contains("0"))
+                if ((int)obj >= 10 || (int)obj < 0)
                 {
                     line += String.Format("({0})", level);
                 }
-                else if (!level.Contains("0"))
+                else
                 {
                     line += level;
                 }
+
+                if (iterator == 16)
+                {
+                    iterator = 1;
+                    lines.Add(line);
+                    line = null;
+                    continue;
+                }
+
                 iterator++;
             }
 
-            //TODO: Write to a .cgp file.
+            //Rest of the stuff is prefabs. Make everything else blank.
 
-            bitmap.Dispose();
+            lines.Add("");
 
-            Console.WriteLine("Completed conversion!");
+            for (int i = 0; i <= 15; i++)
+                lines.Add("0000000000000000");
+
+                Console.WriteLine("Completed conversion!");
+            if (File.Exists(file))
+                Console.WriteLine("Creating a new cgp file...");
+            else
+                Console.WriteLine("Writing to a file...");
+
+            //For some reason, lines.ToString() comes up with System.Collections.Generic.List`1[System.String]. Fucking whatever.
+            using (StreamWriter CGPFile = File.CreateText(GetFileName(file, true) + ".cgp"))
+            {
+                foreach (String str in lines)
+                    CGPFile.WriteLine(str);
+            }
+
+            if (File.Exists(GetFileName(file, true) + ".cgp"))
+                Console.WriteLine("CGP successfully written/created!");
+
+            else if (!File.Exists(GetFileName(file, true) + ".cgp"))
+                Console.WriteLine("File creation/writing failed!");
+
             return 0;
         }
     }
