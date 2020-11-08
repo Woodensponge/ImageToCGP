@@ -58,16 +58,16 @@ namespace ImageToCGP
             Stack levels = new Stack();
 
             /*
-             * This for loop starts from the bottom right corner.
+             * This for loop starts from the top left corner.
              * This loop finds the difference between the first pixel in the image
              * (top left), and finds the "level", then pushes that "level" to the stack.
              * 
              * Keep in mind that I'm reading off of only one color value, which is red. 
              * This is essensially the same as reading of a greyscale image.
              */
-            for (int y = 0; y <= bitmap.Height - 1; y++)
+            for (int y = bitmap.Height - 1; y >= 0; y--)
             {
-                for (int x = bitmap.Width - 1; x >= 0; x--)
+                for (int x = 0; x <= bitmap.Width - 1; x++)
                 {
                     pixel = bitmap.GetPixel(x, y).R;                    //Get the current value of the pixel.
 
