@@ -139,8 +139,17 @@ namespace ImageToCGP
             //For some reason, lines.ToString() comes up with System.Collections.Generic.List`1[System.String]. Fucking whatever.
             using (StreamWriter CGPFile = File.CreateText(GetFileName(file, true) + ".cgp"))
             {
+                int lineNum = 1;                    //Fuck you WriteLine()
                 foreach (String str in lines)
-                    CGPFile.Write("\n" + str);
+                {
+                    if (lineNum == lines.Count)     //If lineNum is equal to lines.Count...
+                    {
+                        CGPFile.Write(str);         //Write a line without adding another fucking space.
+                        break;
+                    }
+                    CGPFile.Write(str + "\n");
+                    lineNum++;
+                }
             }
 
             if (File.Exists(GetFileName(file, true) + ".cgp"))
