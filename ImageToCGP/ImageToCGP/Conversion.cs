@@ -140,7 +140,7 @@ namespace ImageToCGP
             using (StreamWriter CGPFile = File.CreateText(GetFileName(file, true) + ".cgp"))
             {
                 foreach (String str in lines)
-                    CGPFile.WriteLine(str);
+                    CGPFile.Write("\n" + str);
             }
 
             if (File.Exists(GetFileName(file, true) + ".cgp"))
