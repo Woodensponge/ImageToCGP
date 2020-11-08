@@ -19,7 +19,12 @@ namespace ImageToCGP
             string[] array = null;
 
             if (!path.Contains("\\") && !path.Contains("/"))
-                return null;
+            {
+                if (noExtension)
+                    return path.Split('.')[0];
+                else if (!noExtension)
+                    return null;
+            }
 
             else if (path.Contains("\\"))
                 array = path.Split('\\');
