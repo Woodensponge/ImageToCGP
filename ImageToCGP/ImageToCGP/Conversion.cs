@@ -67,14 +67,15 @@ namespace ImageToCGP
              * This loop finds the difference between the first pixel in the image
              * (top left), and finds the "level", then pushes that "level" to the stack.
              * 
-             * Keep in mind that I'm reading off of only one color value, which is red. 
-             * This is essensially the same as reading of a greyscale image.
+             * Keep in mind that I'm NOT reading off of only one color value, which is red. 
+             * This is NOT the same as reading of a greyscale image FUCK FUCK FUCK FUCK FUCK FUCK FUCK FUCK
              */
             for (int y = 0; y <= bitmap.Height - 1; y++)
             {
                 for (int x = 0; x <= bitmap.Width - 1; x++)
                 {
-                    pixel = bitmap.GetPixel(x, y).R;                    //Get the current value of the pixel.
+                    Color pixelColor = bitmap.GetPixel(x, y);
+                    pixel = (byte)((pixelColor.R + pixelColor.G + pixelColor.B) / 3);                    //Get the average value of the pixel.
 
                     if (doInversion)
                     {
