@@ -1,7 +1,9 @@
 # ImageToCGP
  Converts images to .cgp files used for Cyber Grind patterns in the game ULTRAKILL, made by Woodensponge.
  ## Using ImageToCGP
- Right now, ImageToCGP is a console application, meaning you have to give the program arguments for it to do what you want. A GUI is planned for the program, but is not a big priority.
+ ~~Right now, ImageToCGP is a console application, meaning you have to give the program arguments for it to do what you want. A GUI is planned for the program, but is not a big priority.~~
+
+ GUI is being developed right now. Working on getting [Avalonia](https://avaloniaui.net/) integrated.
  ### How do I use it?
  1. Go to the folder where the executable is located.
  
