@@ -57,7 +57,6 @@ class Conversion
             minHeight = -50;
         }
 
-        // FIXME: Doesn't work with anything BUT bitmap images. FIX SOON.
         Bitmap bitmap = new(file);
         Console.WriteLine("Beginning conversion to " + file);
 
