@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using System.Drawing;
-using System.IO;
 
 namespace ImageToCGP;
 
