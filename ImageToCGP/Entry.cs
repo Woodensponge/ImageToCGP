@@ -5,6 +5,30 @@ namespace ImageToCGP;
 
 class Entry
 {
+    public static void PrintHelp()
+    {
+        Console.WriteLine
+        (
+            "ImageToCGP" +
+            "\n======================================================================" +
+            "\nConverts Image files to .cgp files. Used for The Cyber Grind in ULTRAKILL." +
+            "\nKeep in mind that the default minimum and maximum pattern heights FOR THE PROGRAM" +
+            " are 0 to 20. If your maximum pattern heights exceed or fall below cyber grind limits, " +
+            " they will be AUTOMATICALLY ADJUSTED!" +
+            "\n\nFOR [Inversion], TYPE IN \"true\" IN LOWERCASE!" +
+            "\n\nUsage:" +
+            "\n ImageToCGP.exe [File Name]" +
+            "\n ImageToCGP.exe [File Name] [Inversion]" +
+            "\n ImageToCGP.exe [File Name] [Minimum Pattern Height] [Maximum Pattern Height]" +
+            "\n ImageToCGP.exe [File Name] [Minimum Pattern Height] [Maximum Pattern Height] [Inversion]" +
+            "\n\nVerified supported files:" +
+            "\n .png" +
+            "\n .jpg" +
+            "\n .bmp" +
+            "\n======================================================================"
+        );
+    }
+
     public static int Main(string[] args)
     {
         // TODO: Add GUI
@@ -13,13 +37,13 @@ class Entry
         //End user handling
         if (args.Length == 0 || args == null)
         {
-            ConsoleOutputPresets.Info();
+            PrintHelp();
             return -1;
         }
 
-        if (args[0] == "help") 
+        if (args[0] == "help")
         {
-            ConsoleOutputPresets.Info();
+            PrintHelp();
             return 0;
         }
 
@@ -27,70 +51,61 @@ class Entry
         if (!File.Exists(args[0]))
         {
             Console.WriteLine("File cannot be found.");
-            ConsoleOutputPresets.Info();
+            PrintHelp();
             return -1;
         }
 
-        // TODO: GET RID OF THESE GODDAMN COMMENTS. IT LOOKS LIKE AN AI'S TRYING
-        //       TO EXPLAIN .NET FRAMEWORK BULLSHIT TO A 2 YEAR OLD TEETHING THEIR
-        //       KEYBOARD. FUCK.
-#if (DEBUG)
-        string[] splitArgs = args[0].Split('.');
-        Console.WriteLine("File is a " + splitArgs[splitArgs.Length - 1]);
-#endif
-        int minHeight = 0;
-        int maxHeight = 20;
-
-        switch (args.Length)                        //Command switch case (With some end user handling)
+        switch (args.Length)
         {
-            case 1:                                 //If min and max aren't specified...
-                //Begin conversion with prespecified min maxes.
+            case 1:
                 Conversion.BeginConversion(args[0]);
                 break;
-            case 2:                                 //If a second arg is specified...
-                if (args[1] == "true")              //If args[1] is "true"
-                    //Begin conversion with inversion.
+            case 2:
+                if (args[1] == "true")
                     Conversion.BeginConversion(args[0], true);
-                else if (args[1] != "true")         //If something else is args[1]...
+                else if (args[1] != "true")
                 {
-                    Console.WriteLine("Didn't get \"true\" for inversion. Got other stuff instead.");   //Specify they have to put "true"
-                    ConsoleOutputPresets.Info();                                        //Print program information.
-                    return -1;                                                          //Exit program prematurely.
+                    Console.WriteLine("Didn't get \"true\" for inversion. Got other stuff instead.");
+                    PrintHelp();
+                    return -1;
                 }
                 else
-                    //Begin Conversion.
+                {
                     Conversion.BeginConversion(args[0]);
-                break;
-            case 3:                                 //If minimum and maximum height are specified...
-            case 4:                                 //If minimum and maximum height are specified AND Inversion is true...
-                if (!int.TryParse(args[1], out minHeight))                              //If args[1] isn't a number...
-                {
-                    Console.WriteLine("Please specify an number after [File Name]");    //Specify that they have to use a number.
-                    ConsoleOutputPresets.Info();                                        //Print program information.
-                    return -1;                                                          //End program prematurely.
                 }
-                else if (!int.TryParse(args[2], out maxHeight))                         //If args[2] isn't a number...
+                break;
+            case 3:
+            case 4:
+                int minHeight;
+                int maxHeight;
+                if (!int.TryParse(args[1], out minHeight))
                 {
-                    Console.WriteLine("Please specify an number after [File Name]");    //Specify that they have to use a number.
-                    ConsoleOutputPresets.Info();                                        //Print program information.
-                    return -1;                                                          //End program prematurely.
+                    Console.WriteLine("Please specify an number after [File Name]");
+                    PrintHelp();
+                    return -1;
+                }
+                else if (!int.TryParse(args[2], out maxHeight))
+                {
+                    Console.WriteLine("Please specify an number after [File Name]");
+                    PrintHelp();
+                    return -1;
                 }
                 if (minHeight >= maxHeight)
                 {
                     //Specify that their minimum pattern height is greater then maximum pattern height.
                     Console.WriteLine("Minimum pattern height is greater than or equal to maximum pattern height");
-                    ConsoleOutputPresets.Info();                                        //Print program information.
-                    return -1;                                                          //End program prematurely.
+                    PrintHelp();
+                    return -1;
                 }
 
-                if (args.Length >= 4)                                                   //If args.Length is equal to or more then 4...
+                if (args.Length >= 4)
                 {
-                    if (args[3] == "true")                                              //If args[3] is true...
-                        //Begin conversion with heights that were specified and inversion.
+                    if (args[3] == "true")
+                    {
                         Conversion.BeginConversion(args[0], true, minHeight, maxHeight);
+                    }
                     break;
                 }
-                //Begin conversion with heights that were specified.
                 Conversion.BeginConversion(args[0], false, minHeight, maxHeight);
                 break;
         }

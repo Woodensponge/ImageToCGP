@@ -65,7 +65,7 @@ class Conversion
         Console.WriteLine("Beginning conversion to " + file);
 
         //Resize bitmap.
-        using (Bitmap tempBitmap = new Bitmap(bitmap, new Size(16, 16)))
+        using (Bitmap tempBitmap = new(bitmap, new Size(16, 16)))
         {
             bitmap = new Bitmap(tempBitmap);
         }
@@ -111,12 +111,12 @@ class Conversion
             CGPLevels.Push(cgpLevel);
         }
 
-        List<string> lines = new List<string>();
+        List<string> lines = [];
         string? line = null;
 
         int iterator = 1;
 
-        foreach (Object obj in CGPLevels)
+        foreach (var obj in CGPLevels)
         {
             string level = ((int)obj).ToString();
             if ((int)obj >= 10 || (int)obj < 0)
@@ -127,7 +127,6 @@ class Conversion
             {
                 line += level;
             }
-
             if (iterator == 16)
             {
                 iterator = 1;
@@ -135,32 +134,34 @@ class Conversion
                 line = null;
                 continue;
             }
-
             iterator++;
         }
 
         //Rest of the stuff is prefabs. Make everything else blank.
-
         lines.Add("");
 
         for (int i = 0; i <= 15; i++)
+        {
             lines.Add("0000000000000000");
-
-            Console.WriteLine("Completed conversion!");
+        }
+        Console.WriteLine("Completed conversion!");
         if (File.Exists(file))
+        {
             Console.WriteLine("Creating a new cgp file...");
+        }
         else
+        {
             Console.WriteLine("Writing to a file...");
+        }
 
-        //For some reason, lines.ToString() comes up with System.Collections.Generic.List`1[System.String]. Fucking whatever.
         using (StreamWriter CGPFile = File.CreateText(GetFileName(file, true) + ".cgp"))
         {
-            int lineNum = 1;                    //Fuck you WriteLine()
-            foreach (String str in lines)
+            int lineNum = 1;
+            foreach (string str in lines)
             {
-                if (lineNum == lines.Count)     //If lineNum is equal to lines.Count...
+                if (lineNum == lines.Count)
                 {
-                    CGPFile.Write(str);         //Write a line without adding another fucking space.
+                    CGPFile.Write(str);
                     break;
                 }
                 CGPFile.Write(str + "\n");
@@ -169,10 +170,13 @@ class Conversion
         }
 
         if (File.Exists(GetFileName(file, true) + ".cgp"))
+        {
             Console.WriteLine("CGP successfully written/created!");
-
+        }
         else if (!File.Exists(GetFileName(file, true) + ".cgp"))
+        {
             Console.WriteLine("File creation/writing failed!");
+        }
 
         return 0;
     }
